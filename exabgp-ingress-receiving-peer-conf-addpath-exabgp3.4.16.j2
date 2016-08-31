@@ -1,0 +1,21 @@
+group Ingress_Peers {
+        local-address {{ exabgp.ip_address }};
+        router-id {{ exabgp.ip_address }};
+        local-as {{local_as.as}};
+        peer-as {{local_as.as}};
+        group-updates;
+        family {
+                ipv4 nlri-mpls;
+                }
+                {%- for ip_address in ingress_peering_routers.ip_address %}
+                neighbor {{ ip_address }} {
+                        adj-rib-out false;
+                }
+                {%- endfor %}
+                process bgp-epe-routes {
+                        run /usr/bin/python {{home_directory}}/epe-controller-base-prefixes-addpath.py;
+                }
+                process http-api {
+                        run /usr/bin/python {{home_directory}}/app.py;
+                }
+        }

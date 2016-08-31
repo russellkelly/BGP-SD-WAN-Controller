@@ -1,0 +1,25 @@
+group Route-Advertising-Peer {
+	process bgp-peer-json-log {
+		encoder json;
+		receive {
+			parsed;
+			update;
+		}
+		run ./routes.sh;
+	}
+	{%- for ip_address in egress_peering_routers.ip_address %}
+	neighbor {{ ip_address }} {
+	{%- endfor %}
+		local-address {{ exabgp.ip_address }};
+		router-id {{ exabgp.ip_address }};
+		local-as {{local_as.as}};
+		peer-as {{local_as.as}};
+		family {
+			ipv4 unicast;
+			ipv4 nlri-mpls;
+		}
+		capability {
+			add-path send/receive;
+		}
+	}
+}

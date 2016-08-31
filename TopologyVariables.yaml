@@ -1,0 +1,21 @@
+---
+
+# This file defines all the customizable topology details for the EPE Demo
+# Mainly, the controller IP (used in the .py files to send HTTP API),
+# the Egress ASBRs, the EPE routers, the ingress routers (those the controller
+# sends the labeled routes to), and the local AS
+
+egress_peering_routers:
+  ip_address:
+      - 10.164.2.58
+
+ingress_peering_routers:
+  ip_address:
+      - 10.164.2.52
+      - 10.164.2.66
+
+exabgp:
+  ip_address: 10.164.1.177
+
+local_as:
+  as: 64512

@@ -1,0 +1,27 @@
+process bgp-peer-json-log {
+	encoder json;
+	run ./routes.sh;
+}
+{%- for ip_address in egress_peering_routers.ip_address %}
+neighbor {{ ip_address }} {
+{%- endfor %}
+	local-address {{ exabgp.ip_address }};
+	router-id {{ exabgp.ip_address }};
+	local-as {{local_as.as}};
+	peer-as {{local_as.as}};
+	group-updates false;
+	family {
+		ipv4 unicast;
+		ipv4 nlri-mpls;
+	}
+	capability {
+		add-path send/receive;
+	}
+	api {
+		processes [ bgp-peer-json-log ];
+		receive {
+			parsed;
+			update;
+		}
+	}
+}

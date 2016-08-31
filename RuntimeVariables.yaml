@@ -1,0 +1,29 @@
+ImptApplicationsPrefixes:
+  - 12.0.1.0/24
+  - 12.0.2.0/24
+  - 12.0.5.0/24
+  - 13.0.1.0/24
+  - 14.0.1.0/24
+
+VeryImptApplicationsPrefixes:
+  - 12.0.0.0/24
+  - 13.0.7.0/24
+  - 14.0.1.0/24
+
+VeryImportantApplicationsNextHop:
+  ip_address: 172.20.2.3
+
+VeryImportantApplicationsSRPaths:
+  172.20.2.4: 800002 800005 800004
+  172.20.2.5: 800003 800004 800005
+
+
+#####################################################################
+# This section of the YAML file is to define the configured
+#####################################################################
+
+ConfiguredPeerList:
+  peer_address0: 192.168.1.30
+  peer_address1: 192.168.1.20
+  peer_address2: 192.168.1.15
+  peer_address3: 192.168.1.19
