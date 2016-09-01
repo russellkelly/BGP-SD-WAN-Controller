@@ -85,7 +85,7 @@ def check_and_add_route():
 					print(str(route) +' ')
 			for route in bestrouteslistold:
 				if route not in bestrouteslist:
-					stdout.write('withdraw route ' + str(route) +' next-hop '+ str(PeerToASBRMap[str(inv_labelmap[str(bestroutesold[route])])][0])+' label [800000]''\n')
+					stdout.write('withdraw route ' + str(route) +' next-hop '+ str(PeerToASBRMap[str(inv_labelmap_old[str(bestroutesold[route])])][0])+' label [800000]''\n')
 					stdout.flush()	
 		elif len(bestrouteslistold) <= len(bestrouteslist):
 			print("Advertising the following newly learned routes from Egress ASBR's: ")
@@ -99,7 +99,7 @@ def check_and_add_route():
 		print ('\n===================================================================================================\n\n')
 		stdout.flush()
 		bestroutesold = copy.deepcopy(bestroutes)
-		inv_labelmap_no_peers = {v: k for k, v in labelmap.items()}
+		inv_labelmap_old = {v: k for k, v in labelmap.items()}
 		loadlabels()
 		inv_labelmap = {v: k for k, v in labelmap.items()}
 		PeerToASBRMap = loadPeerToASBRMap()
@@ -112,7 +112,7 @@ def check_and_add_route():
 		sleep(5)
 		stdout.write('\n===================================================================================================\\n\n			All defined EPE Peers Are Idle.\n			Lets just remove the EPE Routes\n\n')
 		for route in bestrouteslistold:
-			stdout.write('withdraw route ' + str(route) +' next-hop '+ str(PeerToASBRMap[str(inv_labelmap_no_peers[str(bestroutesold[route])])][0])+' label [800000]''\n')
+			stdout.write('withdraw route ' + str(route) +' next-hop '+ str(PeerToASBRMap[str(inv_labelmap_old[str(bestroutesold[route])])][0])+' label [800000]''\n')
 		stdout.write('\n\n===================================================================================================\\n\n\n')
 		stdout.flush()
 		sleep(5)

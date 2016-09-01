@@ -1,0 +1,31 @@
+process bgp-epe-routes {
+      run /usr/bin/python {{home_directory}}/epe-controller-base-prefixes-addpath.py;
+      encoder json;
+}
+
+process http-api {
+      run /usr/bin/python {{home_directory}}/app.py;
+      encoder json;
+}
+
+
+template Ingress_Peers {
+      local-address {{ exabgp.ip_address }};
+      router-id {{ exabgp.ip_address }};
+      local-as {{local_as.as}};
+      peer-as {{local_as.as}};
+      group-updates;
+      family {
+              ipv4 nlri-mpls;
+      }
+      api {
+        processes [ bgp-epe-routes http-api ];
+      }
+}
+
+{%- for ip_address in ingress_peering_routers.ip_address %}
+neighbor {{ ip_address }} {
+      inherit Ingress_Peers;
+      adj-rib-out false;
+}
+{%- endfor %}

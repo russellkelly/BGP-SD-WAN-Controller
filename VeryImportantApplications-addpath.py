@@ -78,8 +78,6 @@ def add_more_specific_routes():
 		sleep(5)
 	while len(bestroutes) > 0:
 		print('\n====================================================================================================\n\n''Here is the pertinent run-time information\n')
-		print(nexthop_ip) # remove - for testing only
-		print(nexthop_ip_old) # remove - for testing only
 		print(bestroutes)
 		print(ImptApplicationsConfiguredPeerList)
 		print(labelmap)

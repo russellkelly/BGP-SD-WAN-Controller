@@ -114,7 +114,7 @@ def add_more_specific_routes():
 				if route not in bestrouteslist:
 					r = requests.post('http://' + str(controller_ip) + ':5000', files={'command': (None, 'withdraw route ' + str(route) +' next-hop '+ str(PeerToASBRMap[str(inv_labelmap[str(bestroutesold[route])])][0])+' label [800000]''\n')})
 					sleep(.2) # Give the API time to process - avoid the HTTP socket error(Max Retries exceeded with url)
-					print('withdraw route ' + str(route) +' next-hop '+ str(PeerToASBRMap[str(inv_labelmap[str(bestroutesold[route])])][0])+' label [800000]')
+					print('withdraw route ' + str(route) +' next-hop '+ str(PeerToASBRMap[str(inv_labelmap_old[str(bestroutesold[route])])][0])+' label [800000]')
 		elif len(bestrouteslistold) <= len(bestrouteslist):
 			print("Advertising the following newly learned routes from Egress ASBR's: ")
 			for route in bestrouteslist:
@@ -127,7 +127,7 @@ def add_more_specific_routes():
 					print('announce route ' + str(route) +' next-hop '+ str(PeerToASBRMap[str(inv_labelmap[str(bestroutes[route])])][0])+' label [' + str(bestroutes[route]) + ']')
 		print ('\n===================================================================================================\n\n')
 		bestroutesold = copy.deepcopy(bestroutes)
-		inv_labelmap_no_peers = {v: k for k, v in labelmap.items()}
+		inv_labelmap_old = {v: k for k, v in labelmap.items()}
 		loadlabels()
 		inv_labelmap = {v: k for k, v in labelmap.items()}
 		PeerToASBRMap = loadPeerToASBRMap()
@@ -139,7 +139,7 @@ def add_more_specific_routes():
 		for route in bestrouteslistold:
 			r = requests.post('http://' + str(controller_ip) + ':5000', files={'command': (None, 'withdraw route ' + str(route) +' next-hop '+ str(PeerToASBRMap[str(inv_labelmap_no_peers[str(bestroutesold[route])])][0])+' label [800000]''\n')})
 			sleep(.2) # Give the API time to process - avoid the HTTP socket error(Max Retries exceeded with url)
-			print('withdraw route ' + str(route) +' next-hop '+ str(PeerToASBRMap[str(inv_labelmap_no_peers[str(bestroutesold[route])])][0])+' label [800000]')
+			print('withdraw route ' + str(route) +' next-hop '+ str(PeerToASBRMap[str(inv_labelmap_old[str(bestroutesold[route])])][0])+' label [800000]')
 		print('\n\n===================================================================================================\\n\n\n')
 		sleep(5)
 		add_more_specific_routes()
