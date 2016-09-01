@@ -1,3 +1,17 @@
+#############################################################################
+# This section of the YAML file is to define the prefixes that belong
+# to the important applications.  These will be compared against the
+# service prefixes learnt through BGP family inet and will be advertised
+# if they exist from the current active important applications peer_address.
+# If this is not the case the next Important application  peer will be tried
+# and so on until a peer is found.  If no Important application Peer is
+# found the route is withdrawn.  This is evaluated per route, and per
+# external neighbor now with add path
+#
+# NOTE This list can be changed (added to, removed from any time and are
+# evaluated constantly
+#############################################################################
+
 ImptApplicationsPrefixes:
   - 12.0.1.0/24
   - 12.0.2.0/24
@@ -5,21 +19,55 @@ ImptApplicationsPrefixes:
   - 13.0.1.0/24
   - 14.0.1.0/24
 
+#############################################################################
+# This section of the YAML file is to define the prefixes that belong
+# to the very important applications.  These will be compared against the
+# service prefixes learnt through BGP family inet and will be advertised
+# if they exist from the current active very important applications
+# peer_address. If this is not the case the next Important application
+# peer will be tried and so on until a peer is found.  If no Important
+# application Peer is found the route is withdrawn.  This is evaluated per
+# route, and per external neighbor now with add path
+#
+# NOTE This list can be changed (added to, removed from any time and are
+# evaluated constantly while the program is running
+#############################################################################
+
 VeryImptApplicationsPrefixes:
   - 12.0.0.0/24
   - 13.0.7.0/24
   - 14.0.1.0/24
 
+#############################################################################
+# This section of the YAML file is to define the IP address of the fist hop
+# when using the SR Paths below, this is required by the EXA API
+#
+# NOTE This can be changed (added to, removed from any time and are
+# evaluated constantly while the program is running
+#############################################################################
+
 VeryImportantApplicationsNextHop:
   ip_address: 172.20.2.3
+
+##############################################################################
+# This section of the YAML file is to define the SR TE Path that is appended
+# to the Next Hop adress above and pre-pended to dynamically learnt EPE label.
+# This path is per ASBR (two in this case) and engineers traffic to the ASBR
+# loopback, thus withing the SPRING domain.  This SR path is evaluated per
+# entry in VeryImptApplicationsPrefixes
+#
+# NOTE These SR Paths be changed (added to, removed from) any time and are
+# evaluated constantly while the program is running
+#############################################################################
 
 VeryImportantApplicationsSRPaths:
   172.20.2.4: 800002 800005 800004
   172.20.2.5: 800003 800004 800005
 
-
 #####################################################################
-# This section of the YAML file is to define the configured
+# This section of the YAML file is to define the base EPE Peers the service
+# prefixes learnt through BGP from external peers will be sent to. Priority is
+# from 0 -> N.  Can have as meany peers here as you want.
 #####################################################################
 
 ConfiguredPeerList:
