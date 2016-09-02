@@ -34,6 +34,8 @@ RUN chmod +x setup.py
 RUN sudo ./setup.py install
 WORKDIR /home/demo/epe-demo
 
+EXPOSE 179
+EXPOSE 5000
 
 COPY exabgp.env /root/exabgp/etc/exabgp/exabgp.env
 COPY exabgp.env /usr/local/etc/exabgp/exabgp.env
