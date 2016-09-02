@@ -178,4 +178,27 @@ VeryImportantApplications-addpath.py
           RuntimeVariables YAML file, and the python program will pick up
           the new path.
 
+Running the demo
+================
+Once the files RuntimeVariables.yaml and TopologyVariables.yaml are amended with the specific Topology and Runtime 
+information one can run topology.
+
+        python epe-demo-addpaths.py
+
+Choose option "1"
+
+To run the overlay Important and Very Important Application  programs, make sure option “1” is running. Now the 
+prefixes added for Important and VeryImportant applications in the sections of the RuntimeVariables YAML file: are advertised (depending on whether the service prefix is advertised from the specific peers you’ve chosen for these prefixes (below)
+
+To run important applications simply run: 
+
+        python  ImportantApplications-addpath.py.
+
+Choose "1" - then choose the Peers available. Program will run.
+To run Very important applications make sure ter SPRING TE paths are defined in “VeryImportantApplicationsSRPaths” then simply run:
+
+         python VeryImportantApplications-addpath.py.
+
+Choose "1" - then choose the Peers available. Program will run.
+
 
