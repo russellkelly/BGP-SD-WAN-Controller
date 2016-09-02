@@ -14,8 +14,8 @@ https://github.com/Exa-Networks/exabgp
 To build your own version of the controller all you need to do is install Docker clone the git repository then in the 
 cloned directory run:
 
->make build
->make demo
+        make build
+        make demo
 
 As mentioned the demo has been dramatically enhanced:
 
