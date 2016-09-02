@@ -2,7 +2,8 @@ FROM ubuntu:14.04
 
 MAINTAINER Russell Kelly (russellkelly@mac.com)
 
-RUN apt-get update && UBUNTU_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt-get update
 RUN apt-get install -qy --no-install-recommends wget python git
 RUN apt-get install -qy openssh-server
 RUN apt-get install -qy openssh-client
