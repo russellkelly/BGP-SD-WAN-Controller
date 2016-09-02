@@ -4,11 +4,11 @@ build :
 
 bash:
 		docker run --rm -t \
-		--volume `pwd`:/root/demo \
+		--volume `pwd`:/home/demo/epe-demo \
 		-i epe-demo bash
 
 demo:
 		docker run --rm -t \
-		--volume `pwd`:/root/demo \
+		--volume `pwd`:/home/demo/epe-demo \
 		-p 179:179 \
 		-i epe-demo bash
