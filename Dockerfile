@@ -14,6 +14,8 @@ RUN apt-get install -qy libxslt-dev
 RUN apt-get install -qy libssl-dev
 RUN apt-get install -qy libffi-dev
 RUN apt-get install -qy sudo
+RUN apt-get install -qy vim
+RUN apt-get install -qy telnet
 RUN apt-get clean
 RUN pip install flask
 RUN pip install git+https://github.com/Juniper/py-junos-eznc.git
@@ -33,6 +35,7 @@ RUN git checkout master
 RUN chmod +x setup.py
 RUN sudo ./setup.py install
 WORKDIR /home/demo/epe-demo
+RUN chmod -R 777 .
 
 EXPOSE 179
 EXPOSE 5000
