@@ -39,19 +39,6 @@ WORKDIR /home/demo/epe-demo
 EXPOSE 179
 EXPOSE 5000
 
-COPY exabgp.env /root/exabgp/etc/exabgp/exabgp.env
 COPY exabgp.env /usr/local/etc/exabgp/exabgp.env
-COPY app.py /home/demo/epe-demo/
-COPY epe-controller-base-prefixes-addpath.py /home/demo/epe-demo/
-COPY epe-demo-addpaths.py /home/demo/epe-demo/
-COPY exabgp-egress-advertising-peer-conf-addpath.j2 /home/demo/epe-demo/
-COPY exabgp-ingress-receiving-peer-conf-addpath.j2 /home/demo/epe-demo/
-COPY getlabelsandserviceprefixes-addpath.py /home/demo/epe-demo/
-COPY ImportantApplications-addpath.py /home/demo/epe-demo/
-COPY routes.sh /home/demo/epe-demo/
-COPY RuntimeVariables.yaml /home/demo/epe-demo/
-COPY TopologyVariables.yaml /home/demo/epe-demo/
-COPY VeryImportantApplications-addpath.py /home/demo/epe-demo/
-RUN chmod -R 777 .
 
 USER demo
