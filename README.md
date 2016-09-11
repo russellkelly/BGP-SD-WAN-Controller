@@ -15,7 +15,10 @@ To build your own version of the controller all you need to do is install Docker
 cloned directory run:
 
         make build
-        make demo
+        make base-demo #run baseline epe-demo
+        make impt-prefixes-demo #run important prefixes epe-demo
+        make vimpt-prefixes-demo #run very important prefixes epe-demo
+        
 
 As mentioned the demo has been dramatically enhanced:
 
@@ -195,7 +198,7 @@ To run important applications simply run:
         python  ImportantApplications-addpath.py.
 
 Choose "1" - then choose the Peers available. Program will run.
-To run Very important applications make sure ter SPRING TE paths are defined in “VeryImportantApplicationsSRPaths” then simply run:
+To run Very important applications make sure the SPRING TE paths are defined in “VeryImportantApplicationsSRPaths” then simply run:
 
          python VeryImportantApplications-addpath.py.
 
