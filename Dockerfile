@@ -42,5 +42,9 @@ EXPOSE 5000
 
 COPY exabgp.env /root/exabgp/etc/exabgp/exabgp.env
 COPY exabgp.env /usr/local/etc/exabgp/exabgp.env
+COPY app.py /home/demo/epe-demo/
+COPY app.py /home/demo/epe-demo/
+COPY app.py /home/demo/epe-demo/
+COPY app.py /home/demo/epe-demo/
 
 USER demo
