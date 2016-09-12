@@ -6,6 +6,7 @@ from pprint import pprint
 import json
 import sys
 import yaml
+import os
 from collections import defaultdict
 
 def follow(thefile):
@@ -22,18 +23,34 @@ def follow(thefile):
 
 def main():
 	PeerToAddPathIDMappingAnnounce = {}
-	PeerToAddPathIDMappingWithdraw = {}	
-	fl = open('PeerToLabelMapping','w')
-	fa = open('PeerToASBRMapping','w')
-	fap = open('PeerToAddPathIDMapping.yml','w')
-	g = open('ServicePrefixes','w')
-	h = open('bgplog.json','w')
+	PeerToAddPathIDMappingWithdraw = {}
+	script_dir = os.path.dirname(__file__)
+	rel_path = "PeerToLabelMapping"
+	abs_file_path = os.path.join(script_dir, rel_path)
+	fl = open(abs_file_path,'w')
 	fl.close()
+	#fl = open('PeerToLabelMapping','w')
+	rel_path = "PeerToASBRMapping"
+	abs_file_path = os.path.join(script_dir, rel_path)
+	fa = open(abs_file_path,'w')
 	fa.close()
+	#fa = open('PeerToASBRMapping','w')
+	#fap = open('PeerToAddPathIDMapping.yml','w')
+	#g = open('ServicePrefixes','w')
+	rel_path = "PeerToAddPathIDMapping.yml"
+	abs_file_path = os.path.join(script_dir, rel_path)
+	fap = open(abs_file_path,'w')
 	fap.close()
-	g.close()
-	h.close()
-	logfile = open('bgplog.json')        
+	#rel_path = "bgplog.json"
+	#abs_file_path = os.path.join(script_dir, rel_path)
+	#h = open(abs_file_path,'w')
+	#h.close()
+	#h = open('bgplog.json','w')
+	#g.close()
+	rel_path = "bgplog.json"
+	abs_file_path = os.path.join(script_dir, rel_path)
+	logfile = open(abs_file_path,'r')
+	#logfile = open('bgplog.json')        
 	logline = follow(logfile)
 	for line in logline:
 		#print(line)
@@ -63,7 +80,9 @@ def main():
 						PeerToAddPathIDMappingAnnounce[member][prefix] = 0
 					PeerToAddPathIDMappingAnnounce[member][prefix] = peerkey
 			#pprint(PeerToAddPathIDMappingAnnounce)
-			with open('PeerToAddPathIDMapping.yml', 'w') as yaml_file:
+			rel_path = "PeerToAddPathIDMapping.yml"
+			PeerToAddPathIDMapping = os.path.join(script_dir, rel_path)
+			with open(PeerToAddPathIDMapping, 'w') as yaml_file:
 			 	yaml.safe_dump(PeerToAddPathIDMappingAnnounce, yaml_file, default_flow_style=False, encoding='utf-8', allow_unicode=True)
 		elif "ipv4 unicast" in ipv4_type_keys and "withdraw" in message_update_type_keys:
 				withdrawmemberprefixlist = data['neighbor']['message']['update']['withdraw']['ipv4 unicast']
@@ -98,7 +117,9 @@ def main():
 								else:
 									pass
 				#print(PeerToAddPathIDMappingAnnounce)
-				with open('PeerToAddPathIDMapping.yml', 'w') as yaml_file:
+				rel_path = "PeerToAddPathIDMapping.yml"
+				PeerToAddPathIDMapping = os.path.join(script_dir, rel_path)
+				with open(PeerToAddPathIDMapping, 'w') as yaml_file:
 					yaml.safe_dump(PeerToAddPathIDMappingAnnounce, yaml_file, default_flow_style=False, encoding='utf-8', allow_unicode=True)
 		elif "ipv4 nlri-mpls" in ipv4_type_keys and "announce" in message_update_type_keys:
 			neighbor_message_update_announce_keys = data["neighbor"]["message"]["update"]["announce"]['ipv4 nlri-mpls'].keys()
@@ -107,9 +128,11 @@ def main():
 				external_peers = data["neighbor"]["message"]["update"]["announce"]['ipv4 nlri-mpls'][announce_peer]
 				external_peers_list = [x['nlri'] for x in external_peers]
 				#pprint(external_peers_list)
+				rel_path = "PeerToASBRMapping"
+				PeerToASBRMapping = os.path.join(script_dir, rel_path)
 				for external_peer_ip in external_peers_list:
-					if str(external_peer_ip) in open('PeerToASBRMapping').read():
-						g = open('PeerToASBRMapping', "r+")
+					if str(external_peer_ip) in open(PeerToASBRMapping).read():
+						g = open(PeerToASBRMapping, "r+")
 						d = g.readlines()
 						g.seek(0)
 						for line in d:
@@ -117,17 +140,19 @@ def main():
 								g.write(line)
 						g.truncate()
 						g.close()
-						g = open('PeerToASBRMapping','a')
+						g = open(PeerToASBRMapping,'a')
 						g.write(str(external_peer_ip) + ':' + str(announce_peer)+'\n') # python will convert \n to os.linesep
 						g.close()
 					else:	
-						g = open('PeerToASBRMapping','a')
+						g = open(PeerToASBRMapping,'a')
 						g.write(str(external_peer_ip) + ':' + str(announce_peer)+'\n') # python will convert \n to os.linesep
 						g.close()	
 					peerlabel = data["neighbor"]["message"]["update"]["announce"]['ipv4 nlri-mpls'][announce_peer][external_peers_list.index(external_peer_ip)]['label']
 					#pprint(peerlabel)
-					if str(external_peer_ip) in open('PeerToLabelMapping').read():
-						g = open('PeerToLabelMapping', "r+")
+					rel_path = "PeerToLabelMapping"
+					PeerToLabelMapping = os.path.join(script_dir, rel_path)
+					if str(external_peer_ip) in open(PeerToLabelMapping).read():
+						g = open(PeerToLabelMapping, "r+")
 						d = g.readlines()
 						g.seek(0)
 						for line in d:
@@ -135,11 +160,11 @@ def main():
 								g.write(line)
 						g.truncate()
 						g.close()
-						g = open('PeerToLabelMapping','a')
+						g = open(PeerToLabelMapping,'a')
 						g.write(str(external_peer_ip) + ':' + str(peerlabel)+'\n') # python will convert \n to os.linesep
 						g.close()
 					else:	
-						g = open('PeerToLabelMapping','a')
+						g = open(PeerToLabelMapping,'a')
 						g.write(str(external_peer_ip) + ':' + str(peerlabel)+'\n') # python will convert \n to os.linesep
 						g.close()
 		elif "ipv4 nlri-mpls" in ipv4_type_keys and "withdraw" in message_update_type_keys:
@@ -151,8 +176,10 @@ def main():
 						#pprint(external_peer_ip)
 						label = (data["neighbor"]["message"]["update"]["withdraw"]['ipv4 nlri-mpls'][prefixlist.index(external_peer_ip)]['label'])
 						#pprint(label)
-						if str(external_peer_ip) in open('PeerToLabelMapping').read():
-							f = open('PeerToLabelMapping', "r+")
+						rel_path = "PeerToLabelMapping"
+						PeerToLabelMapping = os.path.join(script_dir, rel_path)
+						if str(external_peer_ip) in open(PeerToLabelMapping).read():
+							f = open(PeerToLabelMapping, "r+")
 							d = f.readlines()
 							f.seek(0)
 							for line in d:
@@ -160,11 +187,11 @@ def main():
 									f.write(line)
 							f.truncate()
 							f.close()
-							f = open('PeerToLabelMapping','a')
+							f = open(PeerToLabelMapping,'a')
 							f.write(str(external_peer_ip) + ':' + str(label)+'\n') 
 							f.close()
 						else:
-							f = open('PeerToLabelMapping','a')
+							f = open(PeerToLabelMapping,'a')
 							f.write(str(external_peer_ip) + ':' + str(label)+'\n') # python will convert \n to os.linesep
 							f.close()		
 						i =+ 1
