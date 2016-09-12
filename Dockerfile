@@ -35,6 +35,8 @@ RUN git checkout master
 RUN chmod +x setup.py
 RUN sudo ./setup.py install
 WORKDIR /home/demo/epe-demo
+RUN chmod +x quickclean
+RUN chmod +x fullclean
 
 EXPOSE 179
 EXPOSE 5000
