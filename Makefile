@@ -2,31 +2,21 @@
 build :
 	docker build -t epe-demo .
 
-bash:
-	docker run --rm -t \
-	--volume `pwd`:/home/demo/epe-demo \
-	-i epe-demo bash
 
 base-demo:
-	docker run -u root --name epebasedemo --rm -it \
-	--volume `pwd`:/mnt \
+	docker run -u demo -it \
+	--volume `pwd`:/home/demo/epe-demo \
 	-p 179:179 \
 	-p 5000:5000 \
-	-a stdin \
-	-a stdout epe-demo bash
+	--name epebasedemo epe-demo
+	#docker exec -d epebasedemo python epe-demo-addpaths.py
+	#docker --debug exec epebasedemo -it /bin/bash exabgp exabgp-egress-advertising-peer-addpath.conf exabgp-ingress-receiving-peer-addpath.conf
 
-impt-prefix-demo:
-	docker run -u root --name epebasedemo --rm -it \
-	--volume `pwd`:/mnt \
-	-p 179:179 \
-	-p 5000:5000 \
-	-a stdin \
-	-a stdout epe-demo bash
+prefix-demo:
+	docker run --name epeimptprefixdemo --rm -t \
+	--volume `pwd`:/home/demo/epe-demo \
+        -i epe-demo bash
 
-vimpt-prefix-demo:
-	docker run -u root --name epebasedemo --rm -it \
-	--volume `pwd`:/mnt \
-	-p 179:179 \
-	-p 5000:5000 \
-	-a stdin \
-	-a stdout epe-demo bash
+clean:
+	docker stop epebasedemo
+	docker rm epebasedemo
