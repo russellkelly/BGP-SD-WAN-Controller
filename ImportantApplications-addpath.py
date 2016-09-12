@@ -72,6 +72,7 @@ def add_more_specific_routes():
 	while len(bestroutes) > 0:
 		print('\n====================================================================================================\n\n''Here is the pertinent run-time information\n')
 		print(bestroutes)
+		print(bestroutesold)
 		print(ImptApplicationsConfiguredPeerList)
 		print(labelmap)
 		print(inv_labelmap)
@@ -105,6 +106,32 @@ def add_more_specific_routes():
 					r = requests.post('http://' + str(controller_ip) + ':5000', files={'command': (None, 'announce route ' + str(element[0]) +' next-hop '+ str(PeerToASBRMap[str(inv_labelmap[str(element[1])])][0])+' label [' + str(element[1]) + ']''\n')})
 					sleep(.2) # Give the API time to process - avoid the HTTP socket error(Max Retries exceeded with url)
 					print('announce route ' + str(element[0]) +' next-hop '+ str(PeerToASBRMap[str(inv_labelmap[str(element[1])])][0])+' label [' + str(element[1]) + ']')
+		elif len(bestrouteslistold) >= len(bestrouteslist) and sum({k:int(v) for k, v in bestroutes.iteritems()}.values()) > 0 and cmp(bestroutes, bestroutesold) != 0 and len(set(bestroutes.items()) & set(bestroutesold.items())) == 0:
+			unmatched_item = set(bestroutes.items()) ^ set(bestroutesold.items())
+			print("Removing the following routes no longer Advertised by New Egress ASBR's: ")
+			for route in bestrouteslistold:
+				if route not in bestrouteslist:
+					print(str(route) +' ')
+			for route in bestrouteslistold:
+				if route not in bestrouteslist:
+					r = requests.post('http://' + str(controller_ip) + ':5000', files={'command': (None, 'withdraw route ' + str(route) +' next-hop '+ str(PeerToASBRMap[str(inv_labelmap_old[str(bestroutesold[route])])][0])+' label [800000]''\n')})
+					sleep(.2) # Give the API time to process - avoid the HTTP socket error(Max Retries exceeded with url)
+					print('withdraw route ' + str(route) +' next-hop '+ str(PeerToASBRMap[str(inv_labelmap_old[str(bestroutesold[route])])][0])+' label [800000]')
+			print("\nAdvertising the following newly learned routes from New Egress ASBR's: ")
+			for route in bestrouteslist:
+				print(str(route) +' ')		
+			for route in bestrouteslist:			
+				r = requests.post('http://' + str(controller_ip) + ':5000', files={'command': (None, 'announce route ' + str(route) +' next-hop '+ str(PeerToASBRMap[str(inv_labelmap[str(bestroutes[route])])][0])+' label [' + str(bestroutes[route]) + ']''\n')})
+				sleep(.2) # Give the API time to process - avoid the HTTP socket error(Max Retries exceeded with url)
+				print('announce route ' + str(route) +' next-hop '+ str(PeerToASBRMap[str(inv_labelmap[str(bestroutes[route])])][0])+' label [' + str(bestroutes[route]) + ']')		
+		elif len(bestrouteslistold) <= len(bestrouteslist) and sum({k:int(v) for k, v in bestroutes.iteritems()}.values()) > 0 and cmp(bestroutes, bestroutesold) != 0 and len(set(bestroutes.items()) & set(bestroutesold.items())) == 0:
+			print("Advertising the following newly learned routes from New Egress ASBR's: ")
+			for route in bestrouteslist:
+				print(str(route) +' ')		
+			for route in bestrouteslist:			
+				r = requests.post('http://' + str(controller_ip) + ':5000', files={'command': (None, 'announce route ' + str(route) +' next-hop '+ str(PeerToASBRMap[str(inv_labelmap[str(bestroutes[route])])][0])+' label [' + str(bestroutes[route]) + ']''\n')})
+				sleep(.2) # Give the API time to process - avoid the HTTP socket error(Max Retries exceeded with url)
+				print('announce route ' + str(route) +' next-hop '+ str(PeerToASBRMap[str(inv_labelmap[str(bestroutes[route])])][0])+' label [' + str(bestroutes[route]) + ']')							
 		elif len(bestrouteslistold) >= len(bestrouteslist):
 			print("Removing the following routes no longer Advertised by Egress ASBR's: ")
 			for route in bestrouteslistold:
@@ -112,7 +139,7 @@ def add_more_specific_routes():
 					print(str(route) +' ')
 			for route in bestrouteslistold:
 				if route not in bestrouteslist:
-					r = requests.post('http://' + str(controller_ip) + ':5000', files={'command': (None, 'withdraw route ' + str(route) +' next-hop '+ str(PeerToASBRMap[str(inv_labelmap[str(bestroutesold[route])])][0])+' label [800000]''\n')})
+					r = requests.post('http://' + str(controller_ip) + ':5000', files={'command': (None, 'withdraw route ' + str(route) +' next-hop '+ str(PeerToASBRMap[str(inv_labelmap_old[str(bestroutesold[route])])][0])+' label [800000]''\n')})
 					sleep(.2) # Give the API time to process - avoid the HTTP socket error(Max Retries exceeded with url)
 					print('withdraw route ' + str(route) +' next-hop '+ str(PeerToASBRMap[str(inv_labelmap_old[str(bestroutesold[route])])][0])+' label [800000]')
 		elif len(bestrouteslistold) <= len(bestrouteslist):
@@ -137,7 +164,7 @@ def add_more_specific_routes():
 		sleep(5)
 		print('\n===================================================================================================\\n\n			All defined EPE Peers Are Idle.\n			Lets just remove the EPE Routes\n\n')
 		for route in bestrouteslistold:
-			r = requests.post('http://' + str(controller_ip) + ':5000', files={'command': (None, 'withdraw route ' + str(route) +' next-hop '+ str(PeerToASBRMap[str(inv_labelmap_no_peers[str(bestroutesold[route])])][0])+' label [800000]''\n')})
+			r = requests.post('http://' + str(controller_ip) + ':5000', files={'command': (None, 'withdraw route ' + str(route) +' next-hop '+ str(PeerToASBRMap[str(inv_labelmap_old[str(bestroutesold[route])])][0])+' label [800000]''\n')})
 			sleep(.2) # Give the API time to process - avoid the HTTP socket error(Max Retries exceeded with url)
 			print('withdraw route ' + str(route) +' next-hop '+ str(PeerToASBRMap[str(inv_labelmap_old[str(bestroutesold[route])])][0])+' label [800000]')
 		print('\n\n===================================================================================================\\n\n\n')

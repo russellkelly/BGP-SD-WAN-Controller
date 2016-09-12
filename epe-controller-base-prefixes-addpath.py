@@ -12,6 +12,7 @@ import copy
 import re
 import subprocess
 import signal
+import requests
 import os
 import yaml
 
@@ -78,6 +79,29 @@ def check_and_add_route():
 				if element[1] == bestroutes[element[0]]:
 					stdout.write('announce route ' + str(element[0]) +' next-hop '+ str(PeerToASBRMap[str(inv_labelmap[str(element[1])])][0])+' label [' + str(element[1]) + ']''\n')
 					stdout.flush()
+		elif len(bestrouteslistold) >= len(bestrouteslist) and sum({k:int(v) for k, v in bestroutes.iteritems()}.values()) > 0 and cmp(bestroutes, bestroutesold) != 0 and len(set(bestroutes.items()) & set(bestroutesold.items())) == 0:
+			unmatched_item = set(bestroutes.items()) ^ set(bestroutesold.items())
+			print("Removing the following routes no longer Advertised by New Egress ASBR's: ")
+			for route in bestrouteslistold:
+				if route not in bestrouteslist:
+					print(str(route) +' ')
+			for route in bestrouteslistold:
+				if route not in bestrouteslist:
+					stdout.write('withdraw route ' + str(route) +' next-hop '+ str(PeerToASBRMap[str(inv_labelmap_old[str(bestroutesold[route])])][0])+' label [800000]''\n')
+					stdout.flush()	
+			print("Advertising the following newly learned routes from New Egress ASBR's: ")
+			for route in bestrouteslist:
+				print(str(route) +' ')		
+			for route in bestrouteslist:			
+				stdout.write('announce route ' + str(route) +' next-hop '+ str(PeerToASBRMap[str(inv_labelmap[str(bestroutes[route])])][0])+' label [' + str(bestroutes[route]) + ']''\n')
+				stdout.flush()
+		elif len(bestrouteslistold) <= len(bestrouteslist) and sum({k:int(v) for k, v in bestroutes.iteritems()}.values()) > 0 and cmp(bestroutes, bestroutesold) != 0 and len(set(bestroutes.items()) & set(bestroutesold.items())) == 0:
+			print("Advertising the following newly learned routes from New Egress ASBR's: ")
+			for route in bestrouteslist:
+				print(str(route) +' ')		
+			for route in bestrouteslist:			
+				stdout.write('announce route ' + str(route) +' next-hop '+ str(PeerToASBRMap[str(inv_labelmap[str(bestroutes[route])])][0])+' label [' + str(bestroutes[route]) + ']''\n')
+				stdout.flush()
 		elif len(bestrouteslistold) >= len(bestrouteslist):
 			print("Removing the following routes no longer Advertised by Egress ASBR's: ")
 			for route in bestrouteslistold:
