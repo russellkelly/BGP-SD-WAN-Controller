@@ -2,6 +2,10 @@ process bgp-peer-json-log {
 	encoder json;
 	run ./routes.sh;
 }
+process get-epe-routes {
+      run /usr/bin/python {{home_directory}}/getlabelsandserviceprefixes-addpath.py;
+      encoder json;
+}
 {%- for ip_address in egress_peering_routers.ip_address %}
 neighbor {{ ip_address }} {
 {%- endfor %}
@@ -18,7 +22,7 @@ neighbor {{ ip_address }} {
 		add-path send/receive;
 	}
 	api {
-		processes [ bgp-peer-json-log ];
+		processes [ get-epe-routes bgp-peer-json-log ];
 		receive {
 			parsed;
 			update;
