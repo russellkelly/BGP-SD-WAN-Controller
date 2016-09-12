@@ -50,6 +50,7 @@ def RenderConfigFiles():
 	abs_file_path = os.path.join(script_dir, rel_path)
 	file=open(abs_file_path)
 	topo_vars = yaml.load(file.read())
+	topo_vars['home_directory'] = os.path.dirname(os.path.realpath(__file__))
 	file.close()
 	template_open = open("exabgp-egress-advertising-peer-conf-addpath.j2")
 	ingress_template = Template(template_open.read())
