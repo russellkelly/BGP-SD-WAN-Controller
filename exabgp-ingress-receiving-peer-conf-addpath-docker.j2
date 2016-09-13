@@ -1,7 +1,3 @@
-process bgp-epe-routes {
-      run /usr/bin/python {{home_directory}}/epe-controller-base-prefixes-addpath.py;
-      encoder json;
-}
 
 process http-api {
       run /usr/bin/python {{home_directory}}/app.py;
@@ -19,7 +15,7 @@ template Ingress_Peers {
               ipv4 nlri-mpls;
       }
       api {
-        processes [ bgp-epe-routes http-api ];
+        processes [ http-api ];
       }
 }
 

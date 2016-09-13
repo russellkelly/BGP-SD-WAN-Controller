@@ -1,11 +1,11 @@
-run:	build base-demo prefix-demo
+demo:	build base-container demo-container
 
 
 build :
 	docker build -t epe-demo .
 
 
-base-demo:
+base-container:
 	docker run -d -it \
 	--volume `pwd`:/home/demo/epe-demo \
 	-p 179:179 \
@@ -13,8 +13,13 @@ base-demo:
 	--name epebasedemo epe-demo
 	docker exec -d epebasedemo python epe-demo-base-docker.py
 
-prefix-demo:
-	docker run --name epeimptprefixdemo --rm -t \
+demo-container:
+	docker run --name epedemo --rm -t \
+	--volume `pwd`:/home/demo/epe-demo \
+        -i epe-demo bash
+
+term:
+	docker run --rm -t \
 	--volume `pwd`:/home/demo/epe-demo \
         -i epe-demo bash
 

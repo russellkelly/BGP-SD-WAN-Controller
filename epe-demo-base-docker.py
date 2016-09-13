@@ -35,7 +35,7 @@ def RenderConfigFiles():
 	topo_vars = yaml.load(file.read())
 	topo_vars['home_directory'] = os.path.dirname(os.path.realpath(__file__))
 	file.close()
-	template_open = open("exabgp-ingress-receiving-peer-conf-addpath.j2")
+	template_open = open("exabgp-ingress-receiving-peer-conf-addpath-docker.j2")
 	ingress_template = Template(template_open.read())
 	template_output = ingress_template.render(topo_vars)
 	script_dir = os.path.dirname(__file__)

@@ -136,7 +136,10 @@ def check_and_add_route():
 		sleep(5)
 		stdout.write('\n===================================================================================================\\n\n			All defined EPE Peers Are Idle.\n			Lets just remove the EPE Routes\n\n')
 		for route in bestrouteslistold:
-			stdout.write('withdraw route ' + str(route) +' next-hop '+ str(PeerToASBRMap[str(inv_labelmap_old[str(bestroutesold[route])])][0])+' label [800000]''\n')
+			try:
+				stdout.write('withdraw route ' + str(route) +' next-hop '+ str(PeerToASBRMap[str(inv_labelmap_old[str(bestroutesold[route])])][0])+' label [800000]''\n')
+			except KeyError:
+				continue
 		stdout.write('\n\n===================================================================================================\\n\n\n')
 		stdout.flush()
 		sleep(5)
