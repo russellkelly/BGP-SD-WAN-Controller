@@ -29,39 +29,28 @@ def main():
 	abs_file_path = os.path.join(script_dir, rel_path)
 	fl = open(abs_file_path,'w')
 	fl.close()
-	#fl = open('PeerToLabelMapping','w')
 	rel_path = "PeerToASBRMapping"
 	abs_file_path = os.path.join(script_dir, rel_path)
 	fa = open(abs_file_path,'w')
 	fa.close()
-	#fa = open('PeerToASBRMapping','w')
-	#fap = open('PeerToAddPathIDMapping.yml','w')
-	#g = open('ServicePrefixes','w')
 	rel_path = "PeerToAddPathIDMapping.yml"
 	abs_file_path = os.path.join(script_dir, rel_path)
 	fap = open(abs_file_path,'w')
 	fap.close()
-	#rel_path = "bgplog.json"
-	#abs_file_path = os.path.join(script_dir, rel_path)
-	#h = open(abs_file_path,'w')
-	#h.close()
-	#h = open('bgplog.json','w')
-	#g.close()
 	rel_path = "bgplog.json"
 	abs_file_path = os.path.join(script_dir, rel_path)
-	logfile = open(abs_file_path,'r')
-	#logfile = open('bgplog.json')        
+	logfile = open(abs_file_path,'w+')
+	logfile.close()
+	rel_path = "bgplog.json"
+	abs_file_path = os.path.join(script_dir, rel_path)
+	logfile = open(abs_file_path,'r')        
 	logline = follow(logfile)
 	for line in logline:
-		#print(line)
 		data = json.loads(line)
-		#pprint(data)
 		if "neighbor" in line:
 			message_update_type_keys = data['neighbor']['message']['update'].keys()
-			#pprint(message_update_type_keys)
 			for update_type in message_update_type_keys:
 				ipv4_type_keys = data['neighbor']['message']['update'][update_type].keys()
-			#pprint(ipv4_type_keys)
 		else:
 			main()
 		if "ipv4 unicast" in ipv4_type_keys and "announce" in message_update_type_keys:
@@ -69,17 +58,14 @@ def main():
 			for member in service_prefix_keys:
 				announcememberprefixlist = data['neighbor']['message']['update']['announce']['ipv4 unicast'][member]
 				prefixlist = [x['nlri'] for x in announcememberprefixlist]
-				#pprint(prefixlist)
+
 				for prefix in prefixlist:
 					peerkey = data['neighbor']['message']['update']['announce']['ipv4 unicast'][member][prefixlist.index(prefix)]['path-information']
-					#print(prefix)
-					#print(peerkey)
 					if member not in PeerToAddPathIDMappingAnnounce:
 						PeerToAddPathIDMappingAnnounce[member] = {}
 					if prefix not in PeerToAddPathIDMappingAnnounce[member]:
 						PeerToAddPathIDMappingAnnounce[member][prefix] = 0
 					PeerToAddPathIDMappingAnnounce[member][prefix] = peerkey
-			#pprint(PeerToAddPathIDMappingAnnounce)
 			rel_path = "PeerToAddPathIDMapping.yml"
 			PeerToAddPathIDMapping = os.path.join(script_dir, rel_path)
 			with open(PeerToAddPathIDMapping, 'w') as yaml_file:
@@ -87,36 +73,20 @@ def main():
 		elif "ipv4 unicast" in ipv4_type_keys and "withdraw" in message_update_type_keys:
 				withdrawmemberprefixlist = data['neighbor']['message']['update']['withdraw']['ipv4 unicast']
 				prefixlist = [x['nlri'] for x in withdrawmemberprefixlist]
-				#pprint(prefixlist)
 				for i in range(0,len(prefixlist)):
-					#print("here is the value of i")
-					#print(i)
 					prefix = prefixlist[i]
-					#pprint(prefix)
 					peerkey = data['neighbor']['message']['update']['withdraw']['ipv4 unicast'][i]['path-information']
-					#pprint(peerkey)
 					PeerToAddPathIDMappingWithdraw[str(prefix)] = str(peerkey)
-					#print(PeerToAddPathIDMappingWithdraw)
 					WithdrawPrefix = str(prefix)
-					#print(WithdrawPrefix)
 					for member in PeerToAddPathIDMappingAnnounce:
 						#print(member)
 						for prefix in PeerToAddPathIDMappingAnnounce[str(member)].copy():
-							# print(PeerToAddPathIDMappingAnnounce[str(member)][str(prefix)])
-							# print(peerkey)
-							#print("got to the for loop")
-							#print(prefix)
-							# print(PeerToAddPathIDMappingAnnounce[str(member)].keys())
 							for key in PeerToAddPathIDMappingAnnounce[str(member)].keys():
 								if key == WithdrawPrefix and PeerToAddPathIDMappingAnnounce[str(member)][str(prefix)] == str(peerkey):
-									#print(PeerToAddPathIDMappingAnnounce[str(member)])
-									#print("I got here")
 									PeerToAddPathIDMappingAnnounce[str(member)].pop(WithdrawPrefix,None)
-									#print("I also got here")
 									break
 								else:
 									pass
-				#print(PeerToAddPathIDMappingAnnounce)
 				rel_path = "PeerToAddPathIDMapping.yml"
 				PeerToAddPathIDMapping = os.path.join(script_dir, rel_path)
 				with open(PeerToAddPathIDMapping, 'w') as yaml_file:
@@ -124,10 +94,8 @@ def main():
 		elif "ipv4 nlri-mpls" in ipv4_type_keys and "announce" in message_update_type_keys:
 			neighbor_message_update_announce_keys = data["neighbor"]["message"]["update"]["announce"]['ipv4 nlri-mpls'].keys()
 			for announce_peer in neighbor_message_update_announce_keys:
-				#pprint(announce_peer)
 				external_peers = data["neighbor"]["message"]["update"]["announce"]['ipv4 nlri-mpls'][announce_peer]
 				external_peers_list = [x['nlri'] for x in external_peers]
-				#pprint(external_peers_list)
 				rel_path = "PeerToASBRMapping"
 				PeerToASBRMapping = os.path.join(script_dir, rel_path)
 				for external_peer_ip in external_peers_list:
@@ -148,7 +116,6 @@ def main():
 						g.write(str(external_peer_ip) + ':' + str(announce_peer)+'\n') # python will convert \n to os.linesep
 						g.close()	
 					peerlabel = data["neighbor"]["message"]["update"]["announce"]['ipv4 nlri-mpls'][announce_peer][external_peers_list.index(external_peer_ip)]['label']
-					#pprint(peerlabel)
 					rel_path = "PeerToLabelMapping"
 					PeerToLabelMapping = os.path.join(script_dir, rel_path)
 					if str(external_peer_ip) in open(PeerToLabelMapping).read():
@@ -173,9 +140,7 @@ def main():
 				external_peer_withdraws = data["neighbor"]["message"]["update"]["withdraw"]['ipv4 nlri-mpls']
 				prefixlist = [x['nlri'] for x in external_peer_withdraws]
 				for external_peer_ip in prefixlist:
-						#pprint(external_peer_ip)
 						label = (data["neighbor"]["message"]["update"]["withdraw"]['ipv4 nlri-mpls'][prefixlist.index(external_peer_ip)]['label'])
-						#pprint(label)
 						rel_path = "PeerToLabelMapping"
 						PeerToLabelMapping = os.path.join(script_dir, rel_path)
 						if str(external_peer_ip) in open(PeerToLabelMapping).read():
