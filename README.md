@@ -11,13 +11,31 @@ For details on  EXABGP refer to this link:
 
 https://github.com/Exa-Networks/exabgp
 
-To build your own version of the controller all you need to do is install Docker clone the git repository then in the 
-cloned directory run:
+INSTALLATION:
 
-        make build
-        make base-demo #run baseline epe-demo
-        make impt-prefixes-demo #run important prefixes epe-demo
-        make vimpt-prefixes-demo #run very important prefixes epe-demo
+To build your own version of the controller all you need to do is install Docker clone the git repository:
+
+        git clone git@github.com:russellkelly/BGP-SD-WAN-Controller.git
+
+Change the TopologyVariables.yaml file to match the environment.  Note:  The exabgp address, if runnning in a docker container) will not need to be changed as the docker container runs in provate epe-net subnet and the controller (and hence the exabgp process) is given address 192.168.0.2.
+
+Then in the cloned (BGP-SD-WAN-Controller) directory run:
+
+        make demo # This runs build: (Builds the image epe-demo) base-container: & demo-container:
+
+The base container is one that exabgp runs in, and peers with ingress and egress ASBR's.  One can connect to the container if required by running:
+
+        docker attach <container-id>|<container name>
+
+Demo container starts another container in epe-net to run the demo from.
+
+If you need another container (say to run ImportantApplications or VeryImportantApplications run:
+
+        make term
+        
+Term and demo-container will delete upon exit.  The epebasedemo container will not.  To stop and remove run:
+
+        make clean
         
 
 As mentioned the demo has been dramatically enhanced:
@@ -181,12 +199,15 @@ VeryImportantApplications-addpath.py
           RuntimeVariables YAML file, and the python program will pick up
           the new path.
 
-Running the demo
-================
-Once the files RuntimeVariables.yaml and TopologyVariables.yaml are amended with the specific Topology and Runtime 
-information one can run topology.
+Running the demo in a container
+===============================
 
-        python epe-demo-addpaths.py
+Once the git repository has been cloned locally the files RuntimeVariables.yaml and TopologyVariables.yaml are amended with the specific Topology and Runtime information for the new Topology
+
+Now one can run controller:
+
+        make demo
+        python epe-demo-addpaths-docker.py
 
 Choose option "1"
 
@@ -195,13 +216,40 @@ prefixes added for Important and VeryImportant applications in the sections of t
 
 To run important applications simply run: 
 
+        make term
         python  ImportantApplications-addpath.py.
 
 Choose "1" - then choose the Peers available. Program will run.
 To run Very important applications make sure the SPRING TE paths are defined in “VeryImportantApplicationsSRPaths” then simply run:
 
-         python VeryImportantApplications-addpath.py.
+        make term (if a new terminal is required)
+        python VeryImportantApplications-addpath.py.
 
 Choose "1" - then choose the Peers available. Program will run.
 
 
+Running the demo in a VM or a BMS
+===============================
+
+Once the git repository has been cloned locally the files RuntimeVariables.yaml and TopologyVariables.yaml are amended with the specific Topology and Runtime information for the new Topology
+
+Now one can run controller:
+
+        python epe-demo-addpaths.py
+
+Choose option "1"
+
+To run the overlay Important and Very Important Application  programs, make sure option “1” is running. Now the 
+prefixes added for Important and VeryImportant applications in the sections of the RuntimeVariables YAML file: are advertised (depending on whether the service prefix is advertised from the specific peers you’ve chosen for these prefixes (below)
+
+To run important applications simply run the following in a new terminal window: 
+
+        python  ImportantApplications-addpath.py.
+
+Choose "1" - then choose the Peers available. Program will run.
+
+To run Very important applications make sure the SPRING TE paths are defined in “VeryImportantApplicationsSRPaths” then simply run the following in a new terminal window:
+
+        python VeryImportantApplications-addpath.py.
+
+Choose "1" - then choose the Peers available. Program will run.
