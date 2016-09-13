@@ -71,7 +71,7 @@ def bgpandimportantapps():
 	
 def bgpandveryimportantapps():
 	print ('\n===========================================================================\n\n		All Right Lets Rock & Roll!!\n\n	PRESS CTRL+C TO RETURN TO THIS MENU AT ANY TIME\n\n===========================================================================\n\n')
-	os.system("exabgp exabgp-egress-advertising-peer-addpath.conf exabgp-ingress-receiving-peer=addpath.conf")
+	os.system("exabgp exabgp-egress-advertising-peer-addpath.conf exabgp-ingress-receiving-peer-addpath.conf")
 
 def bgponly():
 	print ('\n===========================================================================\n\n		All Right Lets Rock & Roll!!\n\n	PRESS CTRL+C TO RETURN TO THIS MENU AT ANY TIME\n\n===========================================================================\n\n')
