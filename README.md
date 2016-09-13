@@ -5,7 +5,7 @@ A Python Based SPRING and BGP Route Controller focused on the EPE use case.
 
 To run the demo install EXABGP (version 4.0.0) along with Python 2.7.
 
-This is all dockerized (instructions below)
+This controller can be run on a VM or a BMS, but in addition is all dockerized and can be run in a container (instructions below)
 
 For details on  EXABGP refer to this link:
 
@@ -230,6 +230,38 @@ Choose "1" - then choose the Peers available. Program will run.
 
 Running the demo in a VM or a BMS
 ===============================
+
+Build an Ubuntu BMS, or VM and add all requirements per the Dockerfile (detailed below - one can use the Makefile):
+
+        Base ubuntu 14.04 Install
+        apt-get update
+        apt-get install -qy --no-install-recommends wget python git
+        apt-get install -qy openssh-server
+        apt-get install -qy openssh-client
+        apt-get install -qy python-pip
+        apt-get install -qy python-dev
+        apt-get install -qy libxml2-dev
+        apt-get install -qy libxslt-dev
+        apt-get install -qy libssl-dev
+        apt-get install -qy libffi-dev
+        apt-get install -qy sudo
+        apt-get install -qy vim
+        apt-get install -qy telnet
+        apt-get clean
+        pip install flask
+        pip install git+https://github.com/Juniper/py-junos-eznc.git
+        
+        mkdir /home/demo/epe-demo
+        
+        git clone https://github.com/Exa-Networks/exabgp.git
+        /home/demo/epe-demo/exabgp
+        git checkout master
+        chmod +x setup.py
+        sudo ./setup.py install
+        cd /home/demo/epe-demo
+        cp exabgp.env /usr/local/etc/exabgp/exabgp.env
+        
+        useradd -m demo && echo "demo:demo" | chpasswd && adduser demo sudo
 
 Once the git repository has been cloned locally the files RuntimeVariables.yaml and TopologyVariables.yaml are amended with the specific Topology and Runtime information for the new Topology
 
