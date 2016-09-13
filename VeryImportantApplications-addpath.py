@@ -384,72 +384,75 @@ def loadlabels():
 
 
 def main():
-	UserEnteredInformation = {}
-	script_dir = os.path.dirname(__file__)
-	rel_path = "VeryImptApplicationsPeers"
-	abs_file_path = os.path.join(script_dir, rel_path)
-	f = open(abs_file_path,'w') #Clear the file or Create the file if it doesn't exist
-	f.close()
-	loadconfiguredEPEPeers()
-	CurrentIValue = 0
-	print ("\n\n			WELCOME TO THE VERY IMPORTANT APPLICATION PART OF THE EPE DEMO.....!!!\n\n")
-	sleep(1)
-	print ("\n====================================================================================================\n\nHave you started option 3 in the EPE demo program!!!???.............  \n\nIf not, open a new window and run 'python epe-demo-addpaths.py' and select option 4......\n\n====================================================================================================\n\n")
-	print ("\nPress 1 to start this Part of the demo.......\n\n")
-	print ("\nOr press q (..yes small q) to Quit this program.......\n\n")
-	os.system("stty erase '^H'")
-	m = raw_input("Make your selection.........:  ")
-	if m == "1":
-		print ('\n====================================================================================================\n\n	All Right Lets Get the Information for the Two EPE Peers For This Part!!\n\nNote:  We can take as many peers as there are active! We have just limited to 2 for this test.....\n')
-		print ('Make Sure you have added your Very Important Applications prefixes to the YAML fileRuntimeVariables\nSection:''......"VeryImptApplicationsPrefixes".....!!!\n\n====================================================================================================\n\n')
-		pass
-	elif m == "q":
-		print ("\n\nLater Gators........\n\n\n")
+	try:
+		UserEnteredInformation = {}
+		script_dir = os.path.dirname(__file__)
+		rel_path = "VeryImptApplicationsPeers"
+		abs_file_path = os.path.join(script_dir, rel_path)
+		f = open(abs_file_path,'w') #Clear the file or Create the file if it doesn't exist
+		f.close()
+		loadconfiguredEPEPeers()
+		CurrentIValue = 0
+		print ("\n\n			WELCOME TO THE VERY IMPORTANT APPLICATION PART OF THE EPE DEMO.....!!!\n\n")
 		sleep(1)
-		exit(0)
-	else:
-		print("\n\n\nCome on!!! 1 or q only.......:  \n\n")
-		sleep(0.5)
-		main()
-	script_dir = os.path.dirname(__file__)
-	rel_path = "PeerToASBRMapping"
-	abs_file_path = os.path.join(script_dir, rel_path)
-	g=open(abs_file_path, "r")
-	PeerToASBRMap = {}
-	for line in g:
-		x = line.split(":")
-		a = x[0]
-		b = x[1]
-		d = len(a)-3
-		a = a[0:d]
-		c = len(b)-1
-		b = b[0:c]
-		try:
-			PeerToASBRMap[a].append(b)
-		except KeyError:
-			PeerToASBRMap[a] = [b]
-	g.close()	
-	print("Your choice of Active EPE Enabled External Peers are:......\n")
-	print(str(PeerToASBRMap.keys()))
-	os.system("stty erase '^H'")
-	n="peer_address0"
-	m=raw_input("\nEnter the IP Address of the Primary Peer for your VERY Important Applications: ")
-	UserEnteredInformation[n]=m
-	n1="peer_address1"
-	m1=raw_input("\nEnter the IP Address of the Secondary Peer for your VERY Important Applications: ")
-	UserEnteredInformation[n1]=m1
-	script_dir = os.path.dirname(__file__)
-	rel_path = "VeryImptApplicationsPeers"
-	abs_file_path = os.path.join(script_dir, rel_path)
-	with open(abs_file_path, 'w') as f:
-		for key, value in UserEnteredInformation.items():
-			f.write('%s:%s\n' % (key, value))
-	f.close()
-	sleep(2)
-	print ('\n===========================================================================\n\n		All Right Lets Rock & Roll!!\n\n	PRESS CTRL+C TO RETURN TO THIS MENU AT ANY TIME\n\n===========================================================================\n\n')
-	print("starting........")
-	add_more_specific_routes()
-	
+		print ("\n====================================================================================================\n\nHave you started option 3 in the EPE demo program!!!???.............  \n\nIf not, open a new window and run 'python epe-demo-addpaths.py' and select option 4......\n\n====================================================================================================\n\n")
+		print ("\nPress 1 to start this Part of the demo.......\n\n")
+		print ("\nOr press q (..yes small q) to Quit this program.......\n\n")
+		os.system("stty erase '^H'")
+		m = raw_input("Make your selection.........:  ")
+		if m == "1":
+			print ('\n====================================================================================================\n\n	All Right Lets Get the Information for the Two EPE Peers For This Part!!\n\nNote:  We can take as many peers as there are active! We have just limited to 2 for this test.....\n')
+			print ('Make Sure you have added your Very Important Applications prefixes to the YAML fileRuntimeVariables\nSection:''......"VeryImptApplicationsPrefixes".....!!!\n\n====================================================================================================\n\n')
+			pass
+		elif m == "q":
+			print ("\n\nLater Gators........\n\n\n")
+			sleep(1)
+			exit(0)
+		else:
+			print("\n\n\nCome on!!! 1 or q only.......:  \n\n")
+			sleep(0.5)
+			main()
+		script_dir = os.path.dirname(__file__)
+		rel_path = "PeerToASBRMapping"
+		abs_file_path = os.path.join(script_dir, rel_path)
+		g=open(abs_file_path, "r")
+		PeerToASBRMap = {}
+		for line in g:
+			x = line.split(":")
+			a = x[0]
+			b = x[1]
+			d = len(a)-3
+			a = a[0:d]
+			c = len(b)-1
+			b = b[0:c]
+			try:
+				PeerToASBRMap[a].append(b)
+			except KeyError:
+				PeerToASBRMap[a] = [b]
+		g.close()	
+		print("Your choice of Active EPE Enabled External Peers are:......\n")
+		print(str(PeerToASBRMap.keys()))
+		os.system("stty erase '^H'")
+		n="peer_address0"
+		m=raw_input("\nEnter the IP Address of the Primary Peer for your VERY Important Applications: ")
+		UserEnteredInformation[n]=m
+		n1="peer_address1"
+		m1=raw_input("\nEnter the IP Address of the Secondary Peer for your VERY Important Applications: ")
+		UserEnteredInformation[n1]=m1
+		script_dir = os.path.dirname(__file__)
+		rel_path = "VeryImptApplicationsPeers"
+		abs_file_path = os.path.join(script_dir, rel_path)
+		with open(abs_file_path, 'w') as f:
+			for key, value in UserEnteredInformation.items():
+				f.write('%s:%s\n' % (key, value))
+		f.close()
+		sleep(2)
+		print ('\n===========================================================================\n\n		All Right Lets Rock & Roll!!\n\n	PRESS CTRL+C TO RETURN TO THIS MENU AT ANY TIME\n\n===========================================================================\n\n')
+		print("starting........")
+		add_more_specific_routes()
+	except KeyboardInterrupt:
+		signal.signal(signal.SIGINT, exit_gracefully)
+		
 
 
 if __name__ == "__main__":
