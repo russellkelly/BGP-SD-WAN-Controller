@@ -89,7 +89,7 @@ def check_and_add_route():
 				if route not in bestrouteslist:
 					stdout.write('withdraw route ' + str(route) +' next-hop '+ str(PeerToASBRMap[str(inv_labelmap_old[str(bestroutesold[route])])][0])+' label [800000]''\n')
 					stdout.flush()	
-			print("Advertising the following newly learned routes from New Egress ASBR's: ")
+			print("\nAdvertising the following newly learned routes from New Egress ASBR's: ")
 			for route in bestrouteslist:
 				print(str(route) +' ')		
 			for route in bestrouteslist:			
