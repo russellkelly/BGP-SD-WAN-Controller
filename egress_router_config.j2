@@ -1,0 +1,95 @@
+
+{%- for name, asbr in external_peering.iteritems() %}
+===========================================================
+Egress ASBR {{asbr.local_address}}
+===========================================================
+
+protocols {
+    bgp {
+        accept-remote-nexthop;
+        {%- for entry in asbr.external_peers %}
+        group Peer-AS-{{entry.as}} {
+            type external;
+            family inet {
+                unicast;
+            }
+            peer-as {{entry.as}};
+            {%- for neighbor in entry.external_peers_ip %}
+            neighbor {{neighbor}} {
+                egress-te {
+                }
+            }
+            {%- endfor %}
+        {%- endfor %}
+        }
+        group Peer-ASBR {
+            type internal;
+            family inet {
+                unicast {
+                    add-path {
+                        receive;
+                        send {
+                            path-count 6;
+                        }
+                    }
+                }
+                labeled-unicast {
+                    rib {
+                        inet.3;
+                    }
+                }
+            }
+            export exp-arp-to-ibgp-peers;
+            {%- if rr_ip|string() == asbr.local_address|string() %}
+            cluster {{rr_ip}};
+            neighbor {{controller_ip}} {
+              local-address {{asbr.local_address}};
+            }
+            {%- else %}
+            {%- endif %}
+            {%- for name, value in external_peering.iteritems() %}
+            {%- if value.local_address|string() != asbr.local_address|string() %}
+            neighbor {{value.local_address}} {
+                local-address {{asbr.local_address}};
+            }
+            {%- else %}
+            {%- endif %}
+            {%- endfor %}
+        }
+    }
+}
+policy-options {
+    policy-statement exp-arp-to-ibgp-peers {
+        term 1 {
+            from {
+                protocol arp;
+                rib inet.3;
+            }
+            then {
+                next-hop self
+                accept;
+            }
+        }
+        term 2 {
+            from {
+                protocol arp;
+                rib inet6.3;
+            }
+            then {
+                next-hop self;
+                accept;
+            }
+        }
+        term 3 {
+            from protocol bgp;
+            then {
+                next-hop peer-address;
+                accept;
+            }
+        }
+        term 4 {
+            then reject;
+        }
+    }
+}
+{%- endfor %}

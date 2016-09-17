@@ -1,4 +1,4 @@
-demo:	build base-container demo-container
+demo:	base-container demo-container
 
 
 build :
@@ -6,6 +6,7 @@ build :
 
 
 base-container:
+	python RenderASBRConfigs.py
 	docker network create --driver=bridge --subnet=192.168.0.0/16 epe-net
 	docker run -d -it --network=epe-net --ip=192.168.0.2 --dns=8.8.8.8 \
 	--volume `pwd`:/home/demo/epe-demo \

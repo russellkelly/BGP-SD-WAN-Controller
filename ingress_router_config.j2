@@ -1,0 +1,29 @@
+{%- for ip_address in ingress_peering_routers.ip_address %}
+
+===========================================================
+Ingress Router {{ip_address}}
+===========================================================
+
+protocols {
+  bgp {
+    group ExaBGP {
+      type internal;
+      preference 13;
+      local-address {{ ip_address }};
+      family inet {
+          labeled-unicast;
+      }
+      family inet-vpn {
+          any;
+      }
+      local-as {{local_as.as}};
+      {%- for value in ingress_peering_routers.ip_address %}
+            {%- if value|string() != ip_address|string() %}
+      neighbor {{value}};
+            {%- else %}
+            {%- endif %}
+      {%- endfor %}
+      neighbor {{controller_ip}};
+    }
+}
+    {%- endfor %}

@@ -20,3 +20,26 @@ exabgp:
 
 local_as:
   as: 64512
+
+rr_ip: 172.20.2.4
+
+external_peering:
+  asbr1:
+    local_address: 172.20.2.4
+    external_peers:
+    - as: 1
+      external_peers_ip:
+        - 192.168.1.20
+        - 192.168.1.30
+    - as: 2
+      external_peers_ip:
+        - 192.168.1.13
+  asbr2:
+    local_address: 172.20.2.5
+    external_peers:
+    - as: 1
+      external_peers_ip:
+        - 192.168.1.19
+    - as: 2
+      external_peers_ip:
+        - 192.168.1.15
