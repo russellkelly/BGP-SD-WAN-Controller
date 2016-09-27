@@ -102,9 +102,16 @@ TopologyVariables.yaml
           router(s) are defined.  These are the routers that receive the BGP
           labeled routes from EXABGP
 
-          exabgp - This is the IP, or VIP, of the EXABGP process.
+          exabgp - This is the IP, or VIP, of the EXABGP process.  This would 
+          not need to be changed if the controller is running in a Docker container,
+          as the controller is running in its own epe-net on the host
 
           Local_as - The local AS for the EXABGP process.
+          
+          The external_peering section of this file is used to create the configuration
+          for the external routers and is used by the progam RenderASBRConfigs.py.
+          The file it creates is EgressASBRs.conf.  Likewise the ingress router section 
+          is used to creat the file IngressASBRs.conf
 
 
 
