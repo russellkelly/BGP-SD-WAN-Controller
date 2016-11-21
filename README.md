@@ -17,7 +17,7 @@ To build your own version of the controller all you need to do is install Docker
 
         git clone git@github.com:russellkelly/BGP-SD-WAN-Controller.git
 
-Change the TopologyVariables.yaml file to match the environment.  Note:  The exabgp address, if runnning in a docker container) will not need to be changed as the docker container runs in provate epe-net subnet and the controller (and hence the exabgp process) is given address 192.168.0.2.
+Change the TopologyVariables.yaml file to match the environment.  Note:  The exabgp address, if runnning in a docker container) will not need to be changed as the docker container runs in private epe-net subnet and the controller (and hence the exabgp process) is given address 192.168.0.2.
 
 Then in the cloned (BGP-SD-WAN-Controller) directory run:
 
@@ -32,31 +32,31 @@ Demo container starts another container in epe-net to run the demo from.
 If you need another container (say to run ImportantApplications or VeryImportantApplications run:
 
         make term
-        
+
 Term and demo-container will delete upon exit.  The epebasedemo container will not.  To stop and remove run:
 
         make clean
-        
+
 
 As mentioned the demo has been dramatically enhanced:
 
-    One major function is now the controller dynamically reads the JSON route updates from the Egress ASBR’s (via exabgp) 
-    and records the Service prefixes and advertising peer IP from ALL external peer IP peering points  (with BGP add path) 
-    and stores these in a Nested Dictionary format.  {Peer:[{route:addpath-id}, …{N)].  This dictionary is updated real time 
-    with additions and removals of service routes from any external peer. It also dynamically learns the EPE labels for each 
-    external peer and stores these in in a dictionary.  These values are either “exist, “a value” or “0”.  This allows the 
-    controller to determine at a base decision point if the peer is there, along with giving it the EPE label to append to 
+    One major function is now the controller dynamically reads the JSON route updates from the Egress ASBR’s (via exabgp)
+    and records the Service prefixes and advertising peer IP from ALL external peer IP peering points  (with BGP add path)
+    and stores these in a Nested Dictionary format.  {Peer:[{route:addpath-id}, …{N)].  This dictionary is updated real time
+    with additions and removals of service routes from any external peer. It also dynamically learns the EPE labels for each
+    external peer and stores these in in a dictionary.  These values are either “exist, “a value” or “0”.  This allows the
+    controller to determine at a base decision point if the peer is there, along with giving it the EPE label to append to
     the BGP labeled path
-    
-    The other major function (the real guts of the demo) is using these service prefixes and EPE labels, along with configured 
-    EPE peer priority and will then adding and removing or amending routes accordingly.  The python functions keep track of all 
-    these variables, any changes to them realtime.  These nested functions monitor the routes and labels constantly, along with 
-    scanning the single YAML configuration file so any changes made in this configuration file will be picked up by the programs 
-    and the routes/peers will be updated accordingly.  Again all this is running with BGP add-path so the routes and peers are 
-    being monitored per external peering link, not just per ASBR 
-    
-    The Important Prefixes (applications) and Very Important Prefixes can run in parallel and can show a differentiated policy for 
-    certain routes (eg by adding SPRING TE Paths etc), or different ingress peers, on top of the “Base” policy applied to the service 
+
+    The other major function (the real guts of the demo) is using these service prefixes and EPE labels, along with configured
+    EPE peer priority and will then adding and removing or amending routes accordingly.  The python functions keep track of all
+    these variables, any changes to them realtime.  These nested functions monitor the routes and labels constantly, along with
+    scanning the single YAML configuration file so any changes made in this configuration file will be picked up by the programs
+    and the routes/peers will be updated accordingly.  Again all this is running with BGP add-path so the routes and peers are
+    being monitored per external peering link, not just per ASBR
+
+    The Important Prefixes (applications) and Very Important Prefixes can run in parallel and can show a differentiated policy for
+    certain routes (eg by adding SPRING TE Paths etc), or different ingress peers, on top of the “Base” policy applied to the service
     prefixes detailed above.   There’s a lot more to it…but I’ve run out of energy typing…take a look at the code on Github:
 
 Below is some details on what each file does:
@@ -102,15 +102,15 @@ TopologyVariables.yaml
           router(s) are defined.  These are the routers that receive the BGP
           labeled routes from EXABGP
 
-          exabgp - This is the IP, or VIP, of the EXABGP process.  This would 
+          exabgp - This is the IP, or VIP, of the EXABGP process.  This would
           not need to be changed if the controller is running in a Docker container,
           as the controller is running in its own epe-net on the host
 
           Local_as - The local AS for the EXABGP process.
-          
+
           The external_peering section of this file is used to create the configuration
           for the external routers and is used by the progam RenderASBRConfigs.py.
-          The file it creates is EgressASBRs.conf.  Likewise the ingress router section 
+          The file it creates is EgressASBRs.conf.  Likewise the ingress router section
           is used to creat the file IngressASBRs.conf
 
 
@@ -141,10 +141,10 @@ app.py
 getlabelsandserviceprefixes-addpath.py
 ------------------------------
           This is the main script that the createsfiles PeerToLabelMapping,
-          ServicePrefixes, PeerToAddPathIDMapping.yml and bgplog.json and 
-          then parses the JSON formated messages received by EXABGP which 
-          itself is writing the updates to bgplog.json.  It stores the learned 
-          labels and the service prefixes in the files above.  It is continually 
+          ServicePrefixes, PeerToAddPathIDMapping.yml and bgplog.json and
+          then parses the JSON formated messages received by EXABGP which
+          itself is writing the updates to bgplog.json.  It stores the learned
+          labels and the service prefixes in the files above.  It is continually
           running and updating said files.
 
 ImportantApplications-addpath.py
@@ -218,10 +218,10 @@ Now one can run controller:
 
 Choose option "1"
 
-To run the overlay Important and Very Important Application  programs, make sure option “1” is running. Now the 
+To run the overlay Important and Very Important Application  programs, make sure option “1” is running. Now the
 prefixes added for Important and VeryImportant applications in the sections of the RuntimeVariables YAML file: are advertised (depending on whether the service prefix is advertised from the specific peers you’ve chosen for these prefixes (below)
 
-To run important applications simply run: 
+To run important applications simply run:
 
         make term
         python  ImportantApplications-addpath.py.
@@ -257,9 +257,9 @@ Build an Ubuntu BMS, or VM and add all requirements per the Dockerfile (detailed
         apt-get clean
         pip install flask
         pip install git+https://github.com/Juniper/py-junos-eznc.git
-        
+
         mkdir /home/demo/epe-demo
-        
+
         git clone https://github.com/Exa-Networks/exabgp.git
         /home/demo/epe-demo/exabgp
         git checkout master
@@ -267,7 +267,7 @@ Build an Ubuntu BMS, or VM and add all requirements per the Dockerfile (detailed
         sudo ./setup.py install
         cd /home/demo/epe-demo
         cp exabgp.env /usr/local/etc/exabgp/exabgp.env
-        
+
         useradd -m demo && echo "demo:demo" | chpasswd && adduser demo sudo
 
 Once the git repository has been cloned locally the files RuntimeVariables.yaml and TopologyVariables.yaml are amended with the specific Topology and Runtime information for the new Topology
@@ -278,10 +278,10 @@ Now one can run controller:
 
 Choose option "1"
 
-To run the overlay Important and Very Important Application  programs, make sure option “1” is running. Now the 
+To run the overlay Important and Very Important Application  programs, make sure option “1” is running. Now the
 prefixes added for Important and VeryImportant applications in the sections of the RuntimeVariables YAML file: are advertised (depending on whether the service prefix is advertised from the specific peers you’ve chosen for these prefixes (below)
 
-To run important applications simply run the following in a new terminal window: 
+To run important applications simply run the following in a new terminal window:
 
         python  ImportantApplications-addpath.py.
 
